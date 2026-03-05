@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>{% block title %}Resume Analyzer{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"/>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+
+    <!-- Logo -->
+    <div class="sidebar-logo">
+      <span class="logo-icon">🔍</span>
+      <span class="logo-text">ResumeAI</span>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="sidebar-nav">
+
+      <a href="{{ url_for('landing') }}"
+        class="nav-item {% if request.endpoint == 'landing' %}active{% endif %}">
+        <span class="nav-icon">🏠</span>
+        <span class="nav-text">Home</span>
+      </a>
+
+      <div class="nav-section-title">MODULES</div>
+
+      <a href="{{ url_for('analyzer') }}"
+        class="nav-item {% if request.endpoint == 'analyzer' %}active{% endif %}">
+        <span class="nav-icon">1️⃣</span>
+        <span class="nav-text">Upload & Analyze</span>
+      </a>
+
+      <a href="{{ url_for('extractor_page') }}"
+        class="nav-item {% if request.endpoint == 'extractor_page' %}active{% endif %}">
+        <span class="nav-icon">2️⃣</span>
+        <span class="nav-text">PDF Extraction</span>
+      </a>
+
+      <a href="{{ url_for('preprocessor_page') }}"
+        class="nav-item {% if request.endpoint == 'preprocessor_page' %}active{% endif %}">
+        <span class="nav-icon">3️⃣</span>
+        <span class="nav-text">NLP Preprocessing</span>
+      </a>
+
+      <a href="{{ url_for('matcher_page') }}"
+        class="nav-item {% if request.endpoint == 'matcher_page' %}active{% endif %}">
+        <span class="nav-icon">4️⃣</span>
+        <span class="nav-text">Keyword Matching</span>
+      </a>
+
+      <a href="{{ url_for('scorer_page') }}"
+        class="nav-item {% if request.endpoint == 'scorer_page' %}active{% endif %}">
+        <span class="nav-icon">5️⃣</span>
+        <span class="nav-text">Similarity Score</span>
+      </a>
+
+      <a href="{{ url_for('result_page') }}"
+        class="nav-item {% if request.endpoint == 'result_page' %}active{% endif %}">
+        <span class="nav-icon">6️⃣</span>
+        <span class="nav-text">Result View</span>
+      </a>
+
+      <a href="{{ url_for('dashboard') }}"
+        class="nav-item {% if request.endpoint == 'dashboard' %}active{% endif %}">
+        <span class="nav-icon">7️⃣</span>
+        <span class="nav-text">Dashboard</span>
+      </a>
+
+    </nav>
+
+    <!-- Sidebar Footer -->
+    <div class="sidebar-footer">
+      <p>Resume Analyzer v1.0</p>
+      <p>AI-Based ATS System</p>
+    </div>
+
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+
+    <!-- Top Bar -->
+    <div class="topbar">
+      <div class="topbar-title">{% block page_title %}{% endblock %}</div>
+      <div class="topbar-right">
+        <a href="{{ url_for('analyzer') }}" class="topbar-btn">
+          + New Analysis
+        </a>
+      </div>
+    </div>
+
+    <!-- Page Content -->
+    <div class="page-content">
+      {% block content %}{% endblock %}
+    </div>
+
+  </main>
+
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

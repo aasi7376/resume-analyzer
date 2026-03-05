@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard — Resume Analyzer{% endblock %}
+{% block page_title %}Module 7 — Dashboard{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+  <div class="page-badge">Module 07</div>
+  <h2>Analysis Dashboard</h2>
+  <p>View and manage all past resume analyses stored in the database</p>
+</div>
+
+<!-- Stats Overview -->
+<div class="dash-stats">
+  <div class="dash-stat-card">
+    <span class="dash-stat-icon">📊</span>
+    <span class="dash-stat-number">{{ analyses|length }}</span>
+    <span class="dash-stat-label">Total Analyses</span>
+  </div>
+  <div class="dash-stat-card">
+    <span class="dash-stat-icon">🎯</span>
+    <span class="dash-stat-number">
+      {% if analyses %}
+        {{ (analyses|sum(attribute='final_score') / analyses|length)|round(1) }}%
+      {% else %}
+        0%
+      {% endif %}
+    </span>
+    <span class="dash-stat-label">Average Score</span>
+  </div>
+  <div class="dash-stat-card">
+    <span class="dash-stat-icon">🏆</span>
+    <span class="dash-stat-number">
+      {% if analyses %}
+        {{ analyses|map(attribute='final_score')|max|round(1) }}%
+      {% else %}
+        0%
+      {% endif %}
+    </span>
+    <span class="dash-stat-label">Best Score</span>
+  </div>
+  <div class="dash-stat-card">
+    <span class="dash-stat-icon">📈</span>
+    <span class="dash-stat-number">
+      {% if analyses %}
+        {{ analyses|selectattr('final_score', 'ge', 70)|list|length }}
+      {% else %}
+        0
+      {% endif %}
+    </span>
+    <span class="dash-stat-label">Strong Matches</span>
+  </div>
+</div>
+
+<!-- Analyses Table -->
+<div class="card">
+  <div class="card-label">📋 All Analyses</div>
+
+  {% if analyses %}
+  <div class="table-wrap">
+    <table class="dash-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>File Name</th>
+          <th>Final Score</th>
+          <th>Similarity</th>
+          <th>Keywords</th>
+          <th>Status</th>
+          <th>Date</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for analysis in analyses %}
+        <tr>
+          <td>{{ analysis.id }}</td>
+          <td class="filename-cell">📄 {{ analysis.filename }}</td>
+          <td>
+            <span class="score-badge
+              {% if analysis.final_score >= 70 %}score-green
+              {% elif analysis.final_score >= 40 %}score-orange
+              {% else %}score-red{% endif %}">
+              {{ analysis.final_score }}%
+            </span>
+          </td>
+          <td>{{ analysis.similarity_score }}%</td>
+          <td>{{ analysis.keyword_match_ratio }}%</td>
+          <td>
+            {% if analysis.final_score >= 70 %}
+              <span class="status-badge status-strong">Strong</span>
+            {% elif analysis.final_score >= 40 %}
+              <span class="status-badge status-moderate">Moderate</span>
+            {% else %}
+              <span class="status-badge status-weak">Weak</span>
+            {% endif %}
+          </td>
+          <td class="date-cell">{{ analysis.created_at }}</td>
+          <td>
+            <div class="action-btns">
+              <a href="/dashboard/{{ analysis.id }}"
+                class="action-btn view-btn">View</a>
+              <a href="/dashboard/delete/{{ analysis.id }}"
+                class="action-btn delete-btn"
+                onclick="return confirm('Delete this analysis?')">
+                Delete
+              </a>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  {% else %}
+    <div class="empty-state">
+      <span class="empty-icon">📭</span>
+      <p>No analyses found in the database.</p>
+      <p>Go to <a href="{{ url_for('analyzer') }}">Upload & Analyze</a> to run your first analysis.</p>
+    </div>
+  {% endif %}
+
+</div>
+
+<!-- Database Info -->
+<div class="card">
+  <div class="card-label">🗄️ Database Information</div>
+  <div class="info-grid">
+    <div class="info-item">
+      <span class="info-label">Database</span>
+      <span class="info-value">SQLite — resume_analyzer.db</span>
+    </div>
+    <div class="info-item">
+      <span class="info-label">Table</span>
+      <span class="info-value">analyses</span>
+    </div>
+    <div class="info-item">
+      <span class="info-label">Total Records</span>
+      <span class="info-value">{{ analyses|length }}</span>
+    </div>
+    <div class="info-item">
+      <span class="info-label">Storage</span>
+      <span class="info-value">Local SQLite Database</span>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+
+{% block title %}Upload & Analyze — Resume Analyzer{% endblock %}
+{% block page_title %}Module 1 — Upload & Analyze{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+  <div class="page-badge">Module 01</div>
+  <h2>Upload & Analyze</h2>
+  <p>Upload your resume in PDF format and paste the job description to get your ATS match score</p>
+</div>
+
+<!-- Upload Form -->
+<div class="card">
+  <div class="card-label">📤 Resume Upload</div>
+
+  <!-- Drop Zone -->
+  <div class="drop-zone" id="dropZone">
+    <input type="file" id="resumeFile" accept=".pdf"/>
+    <span class="drop-icon">📄</span>
+    <p><strong>Click to upload</strong> or drag and drop</p>
+    <p style="font-size:0.8rem; margin-top:0.3rem;">PDF files only — Max 5MB</p>
+    <p class="file-name" id="fileName"></p>
+  </div>
+</div>
+
+<!-- Job Description -->
+<div class="card">
+  <div class="card-label">📋 Job Description</div>
+  <textarea
+    id="jobDescription"
+    placeholder="Paste the full job description here...">
+  </textarea>
+</div>
+
+<!-- Analyze Button -->
+<button class="btn-analyze" id="analyzeBtn" onclick="analyzeResume()">
+  <span id="btnText">🔍 Analyze Resume</span>
+  <div class="spinner" id="spinner"></div>
+</button>
+
+<!-- Error Box -->
+<div class="error-box" id="errorBox"></div>
+
+<!-- Results Section -->
+<div id="results" style="display:none;">
+
+  <!-- Score Card -->
+  <div class="card" style="margin-top:1.5rem;">
+    <div class="card-label">🎯 ATS Match Score</div>
+    <div class="score-section">
+      <div class="score-ring">
+        <svg viewBox="0 0 120 120">
+          <circle class="track" cx="60" cy="60" r="54"/>
+          <circle class="fill" id="scoreFill" cx="60" cy="60" r="54"/>
+        </svg>
+        <div class="score-center">
+          <span class="score-number" id="scoreNumber">0%</span>
+          <span class="score-label">Match</span>
+        </div>
+      </div>
+      <div class="score-info">
+        <h3 id="scoreTitle"></h3>
+        <p id="scoreDesc"></p>
+        <div class="sub-scores">
+          <div class="sub-score">
+            <span id="similarityScore">0%</span>
+            Similarity
+          </div>
+          <div class="sub-score">
+            <span id="keywordScore">0%</span>
+            Keywords
+          </div>
+        </div>
+        <div style="margin-top:1rem;">
+          <a href="/result" class="btn-view">View Full Result →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Keywords -->
+  <div class="card">
+    <div class="card-label">🔑 Keyword Analysis</div>
+    <div class="kw-grid">
+      <div class="kw-box">
+        <h4 class="kw-title matched-title">✅ Matched Keywords</h4>
+        <p class="kw-count" id="matchedCount"></p>
+        <div class="kw-tags" id="matchedKeywords"></div>
+      </div>
+      <div class="kw-box">
+        <h4 class="kw-title missing-title">❌ Missing Keywords</h4>
+        <p class="kw-count" id="missingCount"></p>
+        <div class="kw-tags" id="missingKeywords"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Suggestions -->
+  <div class="card">
+    <div class="card-label">💡 Improvement Suggestions</div>
+    <ul class="suggestions-list" id="suggestionsList"></ul>
+  </div>
+
+  <!-- Navigation to other modules -->
+  <div class="card">
+    <div class="card-label">🔗 Explore Modules</div>
+    <div class="module-nav-grid">
+      <a href="/extractor" class="module-nav-btn">2️⃣ PDF Extraction</a>
+      <a href="/preprocessor" class="module-nav-btn">3️⃣ NLP Preprocessing</a>
+      <a href="/matcher" class="module-nav-btn">4️⃣ Keyword Matching</a>
+      <a href="/scorer" class="module-nav-btn">5️⃣ Similarity Score</a>
+      <a href="/result" class="module-nav-btn">6️⃣ Full Result</a>
+      <a href="/dashboard" class="module-nav-btn">7️⃣ Dashboard</a>
+    </div>
+  </div>
+
+</div>
+
+{% endblock %}

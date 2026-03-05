@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+
+{% block title %}Keyword Matching — Resume Analyzer{% endblock %}
+{% block page_title %}Module 4 — Keyword Matching{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+  <div class="page-badge">Module 04</div>
+  <h2>Keyword Matching</h2>
+  <p>This module identifies matched and missing keywords between your resume and the job description</p>
+</div>
+
+<!-- How it works -->
+<div class="card">
+  <div class="card-label">⚙️ How This Module Works</div>
+  <div class="info-steps">
+    <div class="info-step">
+      <span class="info-step-icon">🔑</span>
+      <div>
+        <strong>Step 1 — Keyword Extraction</strong>
+        <p>Important keywords are extracted from both resume and job description</p>
+      </div>
+    </div>
+    <div class="info-step">
+      <span class="info-step-icon">🔍</span>
+      <div>
+        <strong>Step 2 — Intersection</strong>
+        <p>Keywords present in both resume and job description are identified as matched</p>
+      </div>
+    </div>
+    <div class="info-step">
+      <span class="info-step-icon">❌</span>
+      <div>
+        <strong>Step 3 — Difference</strong>
+        <p>Keywords in job description but missing from resume are flagged as missing</p>
+      </div>
+    </div>
+    <div class="info-step">
+      <span class="info-step-icon">📊</span>
+      <div>
+        <strong>Step 4 — Match Ratio</strong>
+        <p>Keyword match percentage is calculated as matched / total JD keywords × 100</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Code Snippet -->
+<div class="card">
+  <div class="card-label">💻 Module Code — matcher.py</div>
+  <div class="code-block">
+    <pre>
+def match_keywords(resume_text, jd_text):
+    resume_keywords = extract_keywords(resume_text)
+    jd_keywords     = extract_keywords(jd_text)
+
+    matched = resume_keywords.intersection(jd_keywords)
+    missing = jd_keywords.difference(resume_keywords)
+
+    match_ratio = round(
+        (len(matched) / len(jd_keywords)) * 100, 2
+    )
+    return {
+        "matched": sorted(list(matched)),
+        "missing": sorted(list(missing)),
+        "match_ratio": match_ratio
+    }
+    </pre>
+  </div>
+</div>
+
+<!-- Match Ratio -->
+{% if match_ratio %}
+<div class="card">
+  <div class="card-label">📊 Keyword Match Ratio</div>
+  <div class="ratio-bar-wrap">
+    <div class="ratio-bar">
+      <div class="ratio-fill" style="width: {{ match_ratio }}%"></div>
+    </div>
+    <span class="ratio-percent">{{ match_ratio }}%</span>
+  </div>
+</div>
+{% endif %}
+
+<!-- Keywords Results -->
+<div class="card">
+  <div class="card-label">🔑 Keyword Results</div>
+  {% if matched or missing %}
+    <div class="kw-grid">
+
+      <!-- Matched -->
+      <div class="kw-box">
+        <h4 class="kw-title matched-title">✅ Matched Keywords</h4>
+        <p class="kw-count">{{ matched|length }} keywords found</p>
+        <div class="kw-tags">
+          {% for kw in matched %}
+            <span class="tag tag-matched">{{ kw }}</span>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- Missing -->
+      <div class="kw-box">
+        <h4 class="kw-title missing-title">❌ Missing Keywords</h4>
+        <p class="kw-count">{{ missing|length }} keywords missing</p>
+        <div class="kw-tags">
+          {% for kw in missing %}
+            <span class="tag tag-missing">{{ kw }}</span>
+          {% endfor %}
+        </div>
+      </div>
+
+    </div>
+  {% else %}
+    <div class="empty-state">
+      <span class="empty-icon">📭</span>
+      <p>No resume analyzed yet.</p>
+      <p>Go to <a href="{{ url_for('analyzer') }}">Upload & Analyze</a> first to see keyword results here.</p>
+    </div>
+  {% endif %}
+</div>
+
+<!-- Next Module -->
+<div class="next-module">
+  <span>Next →</span>
+  <a href="{{ url_for('scorer_page') }}">Module 5 — Similarity Score</a>
+</div>
+
+{% endblock %}

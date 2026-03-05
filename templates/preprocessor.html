@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+
+{% block title %}NLP Preprocessing — Resume Analyzer{% endblock %}
+{% block page_title %}Module 3 — NLP Preprocessing{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+  <div class="page-badge">Module 03</div>
+  <h2>NLP Preprocessing</h2>
+  <p>This module uses spaCy to clean and normalize resume text before comparison</p>
+</div>
+
+<!-- How it works -->
+<div class="card">
+  <div class="card-label">⚙️ How This Module Works</div>
+  <div class="info-steps">
+    <div class="info-step">
+      <span class="info-step-icon">🔡</span>
+      <div>
+        <strong>Step 1 — Lowercasing</strong>
+        <p>All text is converted to lowercase for uniform comparison</p>
+      </div>
+    </div>
+    <div class="info-step">
+      <span class="info-step-icon">✂️</span>
+      <div>
+        <strong>Step 2 — Tokenization</strong>
+        <p>Text is split into individual word tokens using spaCy</p>
+      </div>
+    </div>
+    <div class="info-step">
+      <span class="info-step-icon">🚫</span>
+      <div>
+        <strong>Step 3 — Stop Word Removal</strong>
+        <p>Common words like "the", "is", "and" are removed from the text</p>
+      </div>
+    </div>
+    <div class="info-step">
+      <span class="info-step-icon">🌱</span>
+      <div>
+        <strong>Step 4 — Lemmatization</strong>
+        <p>Words are reduced to their root form eg. "running" becomes "run"</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Code Snippet -->
+<div class="card">
+  <div class="card-label">💻 Module Code — preprocessor.py</div>
+  <div class="code-block">
+    <pre>
+import spacy
+nlp = spacy.load("en_core_web_sm")
+
+def preprocess_text(text):
+    doc = nlp(text.lower())
+    tokens = [
+        token.lemma_
+        for token in doc
+        if not token.is_stop
+        and not token.is_punct
+        and not token.is_space
+        and token.is_alpha
+    ]
+    return " ".join(tokens)
+    </pre>
+  </div>
+</div>
+
+<!-- Before After Comparison -->
+<div class="card">
+  <div class="card-label">🔄 Before & After Preprocessing</div>
+  {% if raw and processed %}
+    <div class="compare-grid">
+      <div class="compare-box">
+        <h4 class="compare-title">📄 Raw Text (Before)</h4>
+        <div class="text-output">{{ raw[:1000] }}...</div>
+        <div class="output-meta">
+          <span>📝 Words: {{ raw.split()|length }}</span>
+        </div>
+      </div>
+      <div class="compare-box">
+        <h4 class="compare-title">✅ Processed Text (After)</h4>
+        <div class="text-output">{{ processed[:1000] }}...</div>
+        <div class="output-meta">
+          <span>📝 Words: {{ processed.split()|length }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Reduction Stats -->
+    <div class="stats-row">
+      <div class="stat-pill">
+        <span>Before</span>
+        <strong>{{ raw.split()|length }} words</strong>
+      </div>
+      <div class="stat-arrow">→</div>
+      <div class="stat-pill">
+        <span>After</span>
+        <strong>{{ processed.split()|length }} words</strong>
+      </div>
+      <div class="stat-arrow">=</div>
+      <div class="stat-pill highlight">
+        <span>Reduced by</span>
+        <strong>
+          {{ raw.split()|length - processed.split()|length }} words removed
+        </strong>
+      </div>
+    </div>
+
+  {% else %}
+    <div class="empty-state">
+      <span class="empty-icon">📭</span>
+      <p>No resume analyzed yet.</p>
+      <p>Go to <a href="{{ url_for('analyzer') }}">Upload & Analyze</a> first to see preprocessing results here.</p>
+    </div>
+  {% endif %}
+</div>
+
+<!-- Next Module -->
+<div class="next-module">
+  <span>Next →</span>
+  <a href="{{ url_for('matcher_page') }}">Module 4 — Keyword Matching</a>
+</div>
+
+{% endblock %}

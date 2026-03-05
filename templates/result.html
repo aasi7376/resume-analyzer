@@ -1,0 +1,179 @@
+{% extends "base.html" %}
+
+{% block title %}Result — Resume Analyzer{% endblock %}
+{% block page_title %}Module 6 — Result Visualization{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+  <div class="page-badge">Module 06</div>
+  <h2>Result Visualization</h2>
+  <p>Full analysis result with ATS score, keyword breakdown and improvement suggestions</p>
+</div>
+
+{% if result %}
+
+<!-- Score Card -->
+<div class="card">
+  <div class="card-label">🎯 ATS Match Score</div>
+  <div class="score-section">
+    <div class="score-ring">
+      <svg viewBox="0 0 120 120">
+        <circle class="track" cx="60" cy="60" r="54"/>
+        <circle class="fill" id="scoreFill" cx="60" cy="60" r="54"/>
+      </svg>
+      <div class="score-center">
+        <span class="score-number" id="scoreNumber">{{ result.final_score }}%</span>
+        <span class="score-label">Match</span>
+      </div>
+    </div>
+    <div class="score-info">
+      {% if result.final_score >= 70 %}
+        <h3>Strong Match 🎉</h3>
+        <p>Your resume is well aligned with this job description.</p>
+      {% elif result.final_score >= 40 %}
+        <h3>Moderate Match ⚠️</h3>
+        <p>Your resume partially matches. Consider adding missing keywords.</p>
+      {% else %}
+        <h3>Weak Match ❌</h3>
+        <p>Your resume needs significant improvement for this role.</p>
+      {% endif %}
+      <div class="sub-scores">
+        <div class="sub-score">
+          <span>{{ result.similarity_score }}%</span>
+          Similarity
+        </div>
+        <div class="sub-score">
+          <span>{{ result.keyword_match_ratio }}%</span>
+          Keywords
+        </div>
+        <div class="sub-score">
+          <span>{{ result.final_score }}%</span>
+          Final Score
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Resume Info -->
+<div class="card">
+  <div class="card-label">📄 Resume Information</div>
+  <div class="info-grid">
+    <div class="info-item">
+      <span class="info-label">File Name</span>
+      <span class="info-value">{{ result.filename }}</span>
+    </div>
+    {% if result.created_at %}
+    <div class="info-item">
+      <span class="info-label">Analyzed On</span>
+      <span class="info-value">{{ result.created_at }}</span>
+    </div>
+    {% endif %}
+    <div class="info-item">
+      <span class="info-label">Total JD Keywords</span>
+      <span class="info-value">{{ result.total_jd_keywords }}</span>
+    </div>
+    <div class="info-item">
+      <span class="info-label">Matched Keywords</span>
+      <span class="info-value">{{ result.total_matched }}</span>
+    </div>
+  </div>
+</div>
+
+<!-- Job Description -->
+<div class="card">
+  <div class="card-label">📋 Job Description</div>
+  <div class="text-output">{{ result.job_description }}</div>
+</div>
+
+<!-- Keywords -->
+<div class="card">
+  <div class="card-label">🔑 Keyword Analysis</div>
+  <div class="kw-grid">
+    <div class="kw-box">
+      <h4 class="kw-title matched-title">✅ Matched Keywords</h4>
+      <p class="kw-count">{{ result.matched_keywords|length }} keywords found</p>
+      <div class="kw-tags">
+        {% for kw in result.matched_keywords %}
+          <span class="tag tag-matched">{{ kw }}</span>
+        {% endfor %}
+      </div>
+    </div>
+    <div class="kw-box">
+      <h4 class="kw-title missing-title">❌ Missing Keywords</h4>
+      <p class="kw-count">{{ result.missing_keywords|length }} keywords missing</p>
+      <div class="kw-tags">
+        {% for kw in result.missing_keywords %}
+          <span class="tag tag-missing">{{ kw }}</span>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Suggestions -->
+<div class="card">
+  <div class="card-label">💡 Improvement Suggestions</div>
+  <ul class="suggestions-list">
+    {% for suggestion in result.suggestions %}
+      <li>{{ suggestion }}</li>
+    {% endfor %}
+  </ul>
+</div>
+
+<!-- Score Formula -->
+<div class="card">
+  <div class="card-label">📐 Score Formula</div>
+  <div class="formula-box">
+    <div class="formula">
+      Final Score = ({{ result.similarity_score }} × 0.6) +
+      ({{ result.keyword_match_ratio }} × 0.4) =
+      <strong>{{ result.final_score }}%</strong>
+    </div>
+  </div>
+</div>
+
+<!-- Actions -->
+<div class="actions-row">
+  <a href="{{ url_for('analyzer') }}" class="btn-primary">
+    + New Analysis
+  </a>
+  <a href="{{ url_for('dashboard') }}" class="btn-secondary">
+    View Dashboard
+  </a>
+</div>
+
+{% else %}
+  <div class="card">
+    <div class="empty-state">
+      <span class="empty-icon">📭</span>
+      <p>No result available yet.</p>
+      <p>Go to <a href="{{ url_for('analyzer') }}">Upload & Analyze</a> first to see your result here.</p>
+    </div>
+  </div>
+{% endif %}
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+  // Animate score ring on page load
+  window.addEventListener("load", function () {
+    const score = {{ result.final_score if result else 0 }};
+    const scoreFill = document.getElementById("scoreFill");
+    if (!scoreFill) return;
+
+    const circumference = 339.29;
+    const offset = circumference - (score / 100) * circumference;
+
+    let color = "#ff6b6b";
+    if (score >= 70) color = "#00d4aa";
+    else if (score >= 40) color = "#f5a623";
+
+    scoreFill.style.stroke = color;
+    scoreFill.style.strokeDashoffset = offset;
+    document.getElementById("scoreNumber").style.color = color;
+  });
+</script>
+{% endblock %}

@@ -1,0 +1,165 @@
+{% extends "base.html" %}
+
+{% block title %}Home — Resume Analyzer{% endblock %}
+{% block page_title %}Home{% endblock %}
+
+{% block content %}
+
+<!-- Hero Section -->
+<div class="hero">
+  <div class="hero-badge">AI Powered ATS Simulation System</div>
+  <h1 class="hero-title">Analyze Your Resume<br/>Like a Recruiter</h1>
+  <p class="hero-desc">
+    Upload your resume and paste a job description. Our AI will calculate 
+    your ATS match score, find missing keywords, and give you actionable 
+    suggestions to land your dream job.
+  </p>
+  <div class="hero-btns">
+    <a href="{{ url_for('analyzer') }}" class="btn-primary">Start Analyzing →</a>
+    <a href="{{ url_for('dashboard') }}" class="btn-secondary">View History</a>
+  </div>
+</div>
+
+<!-- Stats Section -->
+<div class="stats-grid">
+  <div class="stat-card">
+    <span class="stat-icon">📄</span>
+    <span class="stat-number">PDF</span>
+    <span class="stat-label">Resume Support</span>
+  </div>
+  <div class="stat-card">
+    <span class="stat-icon">🧠</span>
+    <span class="stat-number">NLP</span>
+    <span class="stat-label">Powered Analysis</span>
+  </div>
+  <div class="stat-card">
+    <span class="stat-icon">🎯</span>
+    <span class="stat-number">TF-IDF</span>
+    <span class="stat-label">Similarity Scoring</span>
+  </div>
+  <div class="stat-card">
+    <span class="stat-icon">💡</span>
+    <span class="stat-number">AI</span>
+    <span class="stat-label">Smart Suggestions</span>
+  </div>
+</div>
+
+<!-- How It Works -->
+<div class="section-title">How It Works</div>
+<div class="steps-grid">
+
+  <div class="step-card">
+    <div class="step-number">01</div>
+    <div class="step-icon">📤</div>
+    <h3>Upload Resume</h3>
+    <p>Upload your resume in PDF format and paste the target job description</p>
+  </div>
+
+  <div class="step-card">
+    <div class="step-number">02</div>
+    <div class="step-icon">🔍</div>
+    <h3>AI Analysis</h3>
+    <p>Our NLP engine extracts, cleans and compares your resume against the job description</p>
+  </div>
+
+  <div class="step-card">
+    <div class="step-number">03</div>
+    <div class="step-icon">📊</div>
+    <h3>Get Score</h3>
+    <p>Receive your ATS match score based on keyword matching and cosine similarity</p>
+  </div>
+
+  <div class="step-card">
+    <div class="step-number">04</div>
+    <div class="step-icon">🚀</div>
+    <h3>Improve Resume</h3>
+    <p>Use our actionable suggestions to improve your resume and increase your score</p>
+  </div>
+
+</div>
+
+<!-- Modules Section -->
+<div class="section-title">System Modules</div>
+<div class="modules-grid">
+
+  <a href="{{ url_for('analyzer') }}" class="module-card">
+    <div class="module-num">01</div>
+    <h3>Upload & Analyze</h3>
+    <p>Upload resume PDF and job description for full ATS analysis</p>
+    <span class="module-arrow">→</span>
+  </a>
+
+  <a href="{{ url_for('extractor_page') }}" class="module-card">
+    <div class="module-num">02</div>
+    <h3>PDF Extraction</h3>
+    <p>View raw text extracted from your resume PDF using PyPDF2</p>
+    <span class="module-arrow">→</span>
+  </a>
+
+  <a href="{{ url_for('preprocessor_page') }}" class="module-card">
+    <div class="module-num">03</div>
+    <h3>NLP Preprocessing</h3>
+    <p>See how spaCy cleans and normalizes your resume text</p>
+    <span class="module-arrow">→</span>
+  </a>
+
+  <a href="{{ url_for('matcher_page') }}" class="module-card">
+    <div class="module-num">04</div>
+    <h3>Keyword Matching</h3>
+    <p>View matched and missing keywords between resume and job description</p>
+    <span class="module-arrow">→</span>
+  </a>
+
+  <a href="{{ url_for('scorer_page') }}" class="module-card">
+    <div class="module-num">05</div>
+    <h3>Similarity Score</h3>
+    <p>TF-IDF vectorization and cosine similarity score breakdown</p>
+    <span class="module-arrow">→</span>
+  </a>
+
+  <a href="{{ url_for('result_page') }}" class="module-card">
+    <div class="module-num">06</div>
+    <h3>Result View</h3>
+    <p>Full analysis result with score ring and improvement suggestions</p>
+    <span class="module-arrow">→</span>
+  </a>
+
+  <a href="{{ url_for('dashboard') }}" class="module-card">
+    <div class="module-num">07</div>
+    <h3>Dashboard</h3>
+    <p>View and manage all past resume analysis history stored in database</p>
+    <span class="module-arrow">→</span>
+  </a>
+
+</div>
+
+<!-- Tech Stack -->
+<div class="section-title">Tech Stack</div>
+<div class="tech-grid">
+  <div class="tech-card">
+    <span class="tech-icon">🐍</span>
+    <span class="tech-name">Python</span>
+  </div>
+  <div class="tech-card">
+    <span class="tech-icon">🌐</span>
+    <span class="tech-name">Flask</span>
+  </div>
+  <div class="tech-card">
+    <span class="tech-icon">🧠</span>
+    <span class="tech-name">spaCy</span>
+  </div>
+  <div class="tech-card">
+    <span class="tech-icon">📊</span>
+    <span class="tech-name">scikit-learn</span>
+  </div>
+  <div class="tech-card">
+    <span class="tech-icon">📄</span>
+    <span class="tech-name">PyPDF2</span>
+  </div>
+  <div class="tech-card">
+    <span class="tech-icon">🗄️</span>
+    <span class="tech-name">SQLite</span>
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% block title %}PDF Extraction — Resume Analyzer{% endblock %}
+{% block page_title %}Module 2 — PDF Extraction{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+  <div class="page-badge">Module 02</div>
+  <h2>PDF Text Extraction</h2>
+  <p>This module uses PyPDF2 to extract raw text from your uploaded resume PDF</p>
+</div>
+
+<!-- How it works -->
+<div class="card">
+  <div class="card-label">⚙️ How This Module Works</div>
+  <div class="info-steps">
+    <div class="info-step">
+      <span class="info-step-icon">📂</span>
+      <div>
+        <strong>Step 1 — File Upload</strong>
+        <p>Resume PDF is received and securely saved to the uploads folder</p>
+      </div>
+    </div>
+    <div class="info-step">
+      <span class="info-step-icon">📖</span>
+      <div>
+        <strong>Step 2 — Page Reading</strong>
+        <p>PyPDF2 opens the file and loops through every page of the document</p>
+      </div>
+    </div>
+    <div class="info-step">
+      <span class="info-step-icon">🧹</span>
+      <div>
+        <strong>Step 3 — Text Cleaning</strong>
+        <p>Extra whitespace, special characters and non-English symbols are removed</p>
+      </div>
+    </div>
+    <div class="info-step">
+      <span class="info-step-icon">✅</span>
+      <div>
+        <strong>Step 4 — Output</strong>
+        <p>Clean raw text string is passed to the NLP Preprocessing module</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Code Snippet -->
+<div class="card">
+  <div class="card-label">💻 Module Code — extractor.py</div>
+  <div class="code-block">
+    <pre>
+import re
+import PyPDF2
+
+def extract_text_from_pdf(file_path):
+    text = ""
+    with open(file_path, "rb") as f:
+        reader = PyPDF2.PdfReader(f)
+        for page in reader.pages:
+            page_text = page.extract_text()
+            if page_text:
+                text += page_text + "\n"
+
+    text = re.sub(r"\s+", " ", text)
+    text = re.sub(r"[^\x00-\x7F]+", " ", text)
+    return text.strip()
+    </pre>
+  </div>
+</div>
+
+<!-- Extracted Text Output -->
+<div class="card">
+  <div class="card-label">📄 Extracted Text Output</div>
+  {% if extracted %}
+    <div class="text-output">{{ extracted }}</div>
+    <div class="output-meta">
+      <span>📊 Character count: {{ extracted|length }}</span>
+      <span>📝 Word count: {{ extracted.split()|length }}</span>
+    </div>
+  {% else %}
+    <div class="empty-state">
+      <span class="empty-icon">📭</span>
+      <p>No resume analyzed yet.</p>
+      <p>Go to <a href="{{ url_for('analyzer') }}">Upload & Analyze</a> first to see extracted text here.</p>
+    </div>
+  {% endif %}
+</div>
+
+<!-- Next Module -->
+<div class="next-module">
+  <span>Next →</span>
+  <a href="{{ url_for('preprocessor_page') }}">Module 3 — NLP Preprocessing</a>
+</div>
+
+{% endblock %}

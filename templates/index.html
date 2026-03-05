@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Resume Analyzer</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"/>
+</head>
+<body>
+
+  <div class="container">
+
+    <!-- Header -->
+    <header>
+      <h1>Resume Analyzer</h1>
+      <p>Upload your resume and paste a job description to get your ATS match score</p>
+    </header>
+
+    <!-- Upload Form -->
+    <div class="card">
+      <div class="form-group">
+        <label>Upload Resume (PDF only)</label>
+        <div class="drop-zone" id="dropZone">
+          <input type="file" id="resumeFile" accept=".pdf" />
+          <span class="drop-icon">📄</span>
+          <p>Click to upload or drag and drop your resume</p>
+          <p class="file-name" id="fileName"></p>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Job Description</label>
+        <textarea 
+          id="jobDescription" 
+          placeholder="Paste the job description here...">
+        </textarea>
+      </div>
+
+      <button class="btn" id="analyzeBtn" onclick="analyzeResume()">
+        <span id="btnText">Analyze Resume</span>
+        <div class="spinner" id="spinner"></div>
+      </button>
+
+      <div class="error-box" id="errorBox"></div>
+    </div>
+
+    <!-- Results Section -->
+    <div id="results">
+
+      <!-- Score Card -->
+      <div class="card">
+        <div class="card-label">ATS Match Score</div>
+        <div class="score-section">
+          <div class="score-ring">
+            <svg viewBox="0 0 120 120">
+              <circle class="track" cx="60" cy="60" r="54"/>
+              <circle class="fill" id="scoreFill" cx="60" cy="60" r="54"/>
+            </svg>
+            <div class="score-center">
+              <span class="score-number" id="scoreNumber">0%</span>
+              <span class="score-label">Match</span>
+            </div>
+          </div>
+          <div class="score-info">
+            <h3 id="scoreTitle">Analyzing...</h3>
+            <p id="scoreDesc"></p>
+            <div class="sub-scores">
+              <div class="sub-score">
+                <span id="similarityScore">0%</span>
+                Similarity
+              </div>
+              <div class="sub-score">
+                <span id="keywordScore">0%</span>
+                Keywords
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Keywords Card -->
+      <div class="card">
+        <div class="card-label">Keyword Analysis</div>
+        <div class="kw-grid">
+          <div class="kw-box">
+            <h4 class="kw-title matched-title">✅ Matched Keywords</h4>
+            <p class="kw-count" id="matchedCount"></p>
+            <div class="kw-tags" id="matchedKeywords"></div>
+          </div>
+          <div class="kw-box">
+            <h4 class="kw-title missing-title">❌ Missing Keywords</h4>
+            <p class="kw-count" id="missingCount"></p>
+            <div class="kw-tags" id="missingKeywords"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Suggestions Card -->
+      <div class="card">
+        <div class="card-label">Improvement Suggestions</div>
+        <ul class="suggestions-list" id="suggestionsList"></ul>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

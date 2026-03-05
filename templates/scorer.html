@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+
+{% block title %}Similarity Score — Resume Analyzer{% endblock %}
+{% block page_title %}Module 5 — Similarity Score{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+  <div class="page-badge">Module 05</div>
+  <h2>Similarity Scoring</h2>
+  <p>This module uses TF-IDF vectorization and cosine similarity to calculate the ATS match score</p>
+</div>
+
+<!-- How it works -->
+<div class="card">
+  <div class="card-label">⚙️ How This Module Works</div>
+  <div class="info-steps">
+    <div class="info-step">
+      <span class="info-step-icon">🔢</span>
+      <div>
+        <strong>Step 1 — TF-IDF Vectorization</strong>
+        <p>Both resume and job description are converted into numerical vectors using TF-IDF</p>
+      </div>
+    </div>
+    <div class="info-step">
+      <span class="info-step-icon">📐</span>
+      <div>
+        <strong>Step 2 — Cosine Similarity</strong>
+        <p>The angle between the two vectors is measured — closer angle means higher similarity</p>
+      </div>
+    </div>
+    <div class="info-step">
+      <span class="info-step-icon">📊</span>
+      <div>
+        <strong>Step 3 — Score Calculation</strong>
+        <p>Raw similarity score between 0 and 1 is converted to a percentage</p>
+      </div>
+    </div>
+    <div class="info-step">
+      <span class="info-step-icon">⚖️</span>
+      <div>
+        <strong>Step 4 — Weighted Final Score</strong>
+        <p>Final score = 60% cosine similarity + 40% keyword match ratio</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Code Snippet -->
+<div class="card">
+  <div class="card-label">💻 Module Code — scorer.py</div>
+  <div class="code-block">
+    <pre>
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+
+def compute_similarity(resume_processed, jd_processed):
+    vectorizer   = TfidfVectorizer()
+    tfidf_matrix = vectorizer.fit_transform(
+                     [resume_processed, jd_processed]
+                   )
+    similarity   = cosine_similarity(
+                     tfidf_matrix[0:1],
+                     tfidf_matrix[1:2]
+                   )
+    score = round(float(similarity[0][0]) * 100, 2)
+    return score
+    </pre>
+  </div>
+</div>
+
+<!-- Score Results -->
+<div class="card">
+  <div class="card-label">📊 Score Breakdown</div>
+  {% if final_score %}
+    <div class="score-breakdown">
+
+      <!-- Cosine Similarity -->
+      <div class="breakdown-item">
+        <div class="breakdown-header">
+          <span class="breakdown-label">🔵 Cosine Similarity Score</span>
+          <span class="breakdown-value">{{ similarity_score }}%</span>
+        </div>
+        <div class="breakdown-bar">
+          <div class="breakdown-fill blue" style="width:{{ similarity_score }}%"></div>
+        </div>
+        <p class="breakdown-desc">Measures textual similarity between resume and job description using TF-IDF vectors</p>
+      </div>
+
+      <!-- Keyword Match -->
+      <div class="breakdown-item">
+        <div class="breakdown-header">
+          <span class="breakdown-label">🟢 Keyword Match Ratio</span>
+          <span class="breakdown-value">{{ keyword_match_ratio }}%</span>
+        </div>
+        <div class="breakdown-bar">
+          <div class="breakdown-fill green" style="width:{{ keyword_match_ratio }}%"></div>
+        </div>
+        <p class="breakdown-desc">Percentage of job description keywords found in the resume</p>
+      </div>
+
+      <!-- Final Score -->
+      <div class="breakdown-item final">
+        <div class="breakdown-header">
+          <span class="breakdown-label">🎯 Final ATS Score</span>
+          <span class="breakdown-value highlight">{{ final_score }}%</span>
+        </div>
+        <div class="breakdown-bar">
+          <div class="breakdown-fill purple" style="width:{{ final_score }}%"></div>
+        </div>
+        <p class="breakdown-desc">Weighted score = (Cosine × 60%) + (Keywords × 40%)</p>
+      </div>
+
+      <!-- Formula -->
+      <div class="formula-box">
+        <div class="formula-label">📐 Score Formula</div>
+        <div class="formula">
+          Final Score = ({{ similarity_score }} × 0.6) + ({{ keyword_match_ratio }} × 0.4) = <strong>{{ final_score }}%</strong>
+        </div>
+      </div>
+
+    </div>
+  {% else %}
+    <div class="empty-state">
+      <span class="empty-icon">📭</span>
+      <p>No resume analyzed yet.</p>
+      <p>Go to <a href="{{ url_for('analyzer') }}">Upload & Analyze</a> first to see score breakdown here.</p>
+    </div>
+  {% endif %}
+</div>
+
+<!-- Next Module -->
+<div class="next-module">
+  <span>Next →</span>
+  <a href="{{ url_for('result_page') }}">Module 6 — Result View</a>
+</div>
+
+{% endblock %}
